@@ -15,8 +15,8 @@ def distance(x1,x2):
 
 class DataPoint:
     def __init__(self, point, type):
-        # type refers to the class of the point in classifier
-        self.__type =  type
+        
+        self.__type = type         # type refers to the class of the point in classifier
         self.__x = point
 
     def setDistance(self, point):
@@ -35,7 +35,6 @@ class DataPoint:
         return self.distance == other.distance
 
 
-
 def analyse_queue(que):
     count = {}
     while not que.empty():
@@ -48,17 +47,19 @@ def analyse_queue(que):
 
 
 def main():
-    train_x, train_y, test_x, test_y = ld.load_data()
-    
-    datapoints = [DataPoint(x,y) for x,y in zip(train_x, train_y)]
-    k = int(input())
 
+    train_x, train_y, test_x, test_y = ld.load_data(sys.argv[1])
+    datapoints = [DataPoint(x,y) for x,y in zip(train_x, train_y)]
+
+    k = int(input("Enter K\n"))
     output = []
+
     for x,y in zip(test_x, test_y):
+
         que = Q.PriorityQueue(maxsize=k)
         for p in datapoints:
-            p.setDistance(x)
 
+            p.setDistance(x)
             if que.full():
                 q = que.queue[0]
                 if p < q:
@@ -66,6 +67,7 @@ def main():
                     que.put(p)
             else:
                 que.put(p)
+                
         output.append((analyse_queue(que),y))
 
     print(test.accuracy(output))
