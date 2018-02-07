@@ -1,6 +1,6 @@
 import numpy as np 
 
-def load_data(filename):
+def load_data(filename = "dataset.csv"):
 
 	data = np.loadtxt(filename, delimiter=',')    
 	np.random.shuffle(data)
