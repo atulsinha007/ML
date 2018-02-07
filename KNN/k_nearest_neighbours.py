@@ -1,3 +1,4 @@
+#dummy file
 def point:
 
 	def __init__(self, dimension, cordinates, typ):
