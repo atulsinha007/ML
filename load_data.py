@@ -16,7 +16,7 @@ def load_data(filename = "dataset.csv"):
 	test_setx = data[n_rows:, :n_cols-1]
 	test_sety = data[n_rows:, n_cols-1:]
   
-	#return (rest_setx, rest_sety, test_setx, test_sety)
+	return (rest_setx, rest_sety, test_setx, test_sety)
 
 def main():
 	filename = input()
