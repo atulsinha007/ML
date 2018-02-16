@@ -16,7 +16,7 @@ def distance(x1,x2):
 
 def main():
 
-    train_x, train_y, test_x, test_y = ld.load_data()
+    train_x, train_y, test_x, test_y = ld.load_data(sys.argv[1])
     dic = {}
 
     for x, y in zip(train_x, train_y):
@@ -30,7 +30,7 @@ def main():
     for x,y in dic.items():
         y = np.asarray(y)
         mean_val = y.mean(axis = 0)
-        print(mean_val)
+        # print(mean_val)
         dic_centroid[x] = mean_val
 
     print("No. of classes = ", len(dic))
@@ -48,7 +48,7 @@ def main():
 
         output.append((class_predicted, y))
 
-    print(test.accuracy(output))
+    print("Accuracy = ", test.accuracy(output))
 
 if __name__ == '__main__':
     main()

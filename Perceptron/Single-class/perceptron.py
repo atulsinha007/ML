@@ -69,7 +69,7 @@ class Perceptron():
                 break
 
         self.__w = w;
-        print("Training Complete", t)
+        print("Training Complete")
     ####################
 
     def test(self, x):
@@ -109,7 +109,7 @@ def main():
     for x,y in zip(test_x, test_y):
         output.append((model.test(x) , y))
 
-    print(test.accuracy(output))
+    print("Accuracy = ", test.accuracy(output))
 
 if __name__ == '__main__':
     main()

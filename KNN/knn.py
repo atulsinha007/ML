@@ -70,7 +70,7 @@ def main():
                 
         output.append((analyse_queue(que),y))
 
-    print(test.accuracy(output))
+    print("Accuracy = ", test.accuracy(output))
 
 if __name__ == '__main__':
     main()

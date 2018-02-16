@@ -78,8 +78,8 @@ def main(l,b,e):
     for x,y in zip(test_x, test_y):
         output.append((model.test(x) , y))
 
-    print(test.accuracy(output))
-    return test.accuracy(output)
+    print("Accuracy = ", test.accuracy(output))
+    # return test.accuracy(output)
 
 
 if __name__ == '__main__':
