@@ -22,4 +22,4 @@
 			python3 irismlp.py <br />
 
 
-#Write parameter written inside [] manually
+#Write parameter written inside [ ] manually
