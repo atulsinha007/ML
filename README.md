@@ -23,3 +23,6 @@
 
 
 #Write parameter written inside [ ] manually.
+
+5. Laplacian Eigenmap for Regression:
+				python demo.py
