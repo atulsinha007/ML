@@ -4,49 +4,16 @@ from sklearn.manifold.locally_linear import (
     null_space, LocallyLinearEmbedding)
 from sklearn.metrics.pairwise import pairwise_distances, rbf_kernel
 from sklearn.neighbors import kneighbors_graph, NearestNeighbors
-
+from mpl_toolkits.mplot3d import Axes3D
+from optparse import OptionParser
+from sklearn.datasets import make_swiss_roll
+from sklearn.manifold import SpectralEmbedding
+import matplotlib.pyplot as plt
 
 def ler(X, Y, n_components=2, affinity='nearest_neighbors',
         n_neighbors=None, gamma=None, mu=1.0, y_gamma=None,
         eigen_solver='auto', tol=1e-6, max_iter=100, 
         random_state=None):
-    """
-    Laplacian Eigenmaps for Regression (LER)
-
-    Parameters
-    ----------
-    X : ndarray, 2-dimensional
-        The data matrix, shape (num_points, num_dims)
-
-    Y : ndarray, 1 or 2-dimensional
-        The response matrix, shape (num_points, num_responses).
-
-    n_components : int
-        Number of dimensions for embedding. Default is 2.
-
-    affinity : string or callable, default : "nearest_neighbors"
-        How to construct the affinity matrix.
-         - 'nearest_neighbors' : construct affinity matrix by knn graph
-         - 'rbf' : construct affinity matrix by rbf kernel
-
-    n_neighbors : int, optional, default=None
-        Number of neighbors for kNN graph construction on X.
-
-    gamma : float, optional, default=None
-        Scaling factor for RBF kernel on X.
-
-    mu : float, optional, default=1.0
-        Influence of the Y-similarity penalty.
-
-    y_gamma : float, optional
-        Scaling factor for RBF kernel on Y.
-        Defaults to the inverse of the median distance between rows of Y.
-
-    Returns
-    -------
-    embedding : ndarray, 2-dimensional
-        The embedding of X, shape (num_points, n_components)
-    """
 
     if eigen_solver not in ('auto', 'arpack', 'dense'):
         raise ValueError("unrecognized eigen_solver '%s'" % eigen_solver)
@@ -102,7 +69,6 @@ def ler(X, Y, n_components=2, affinity='nearest_neighbors',
 
 
 class LER(LocallyLinearEmbedding):
-    """Scikit-learn compatible class for LER."""
 
     def __init__(self, n_components=2, affinity='nearest_neighbors',
                  n_neighbors=2, gamma=None, mu=1.0, y_gamma=None, 
@@ -126,7 +92,6 @@ class LER(LocallyLinearEmbedding):
         return self.embedding_
 
     def fit(self, X, Y):
-        # NN necessary for out-of-sample extensions
         self.nbrs_ = NearestNeighbors(self.n_neighbors,
                                       algorithm=self.neighbors_algorithm)
         self.nbrs_.fit(X)
@@ -139,3 +104,39 @@ class LER(LocallyLinearEmbedding):
             max_iter=self.max_iter, random_state=self.random_state)
 
         return self
+
+def demo(k):
+    X, t = make_swiss_roll(noise=1)
+
+    #le = SpectralEmbedding(n_components=2, n_neighbors=k)
+    #le_X = le.fit_transform(X)
+
+    ler = LER(n_components=2, n_neighbors=k, affinity='rbf')
+    ler_X = ler.fit_transform(X, t)
+    """
+    _, axes = plt.subplots(nrows=1, ncols=3, figsize=plt.figaspect(0.33))
+    axes[0].set_axis_off()
+    axes[0] = plt.subplot(131, projection='3d')
+    axes[0].scatter(*X.T, c=t, s=50)
+    axes[0].set_title('Swiss Roll')
+    axes[1].scatter(*le_X.T, c=t, s=50)
+    axes[1].set_title('LE Embedding')
+    axes[2].scatter(*ler_X.T, c=t, s=50)
+    axes[2].set_title('LER Embedding')
+    plt.show()
+    """
+    _, axes = plt.subplots(nrows=1, ncols=2, figsize=plt.figaspect(0.33))
+    axes[0].set_axis_off()
+    axes[0] = plt.subplot(131, projection='3d')
+    axes[0].scatter(*X.T, c=t, s=50)
+    axes[0].set_title('Swiss Roll')
+    axes[1].scatter(*ler_X.T, c=t, s=50)
+    axes[1].set_title('LER Embedding')
+    plt.show()
+
+if __name__ == "__main__":
+    op = OptionParser()
+    op.add_option('--n_neighbors', type=int, metavar='k', default=10,
+                  help='# of neighbors for LE & LER [7]')
+    opts, args = op.parse_args()
+    demo(opts.n_neighbors)
