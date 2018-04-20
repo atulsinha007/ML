@@ -10,15 +10,18 @@ with locally linear embedding
 ################################################################################
 # locally linear embedding function
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('MacOSX')
 from scipy.sparse import linalg, eye
 from pyamg import smoothed_aggregation_solver
 from sklearn import neighbors
+from bary import barycenter_kneighbors_graph
 
 def locally_linear_embedding(X, n_neighbors, out_dim, tol=1e-6, max_iter=200):
-    W = neighbors.kneighbors_graph(
-        X, n_neighbors=n_neighbors, mode='distance')
 
+    #W = neighbors.kneighbors_graph(
+     #   X, n_neighbors=n_neighbors, mode='distance')
+    W =barycenter_kneighbors_graph(X, n_neighbors)
+    print(W)
     # M = (I-W)' (I-W)
     A = eye(*W.shape, format=W.format) - W
     A = (A.T).dot(A).tocsr()
@@ -41,7 +44,7 @@ import pylab as pl
 
 ################################################################################
 # generate the swiss roll
-
+#matplotlib.get_backend()
 n_samples, n_features = 2000, 3
 n_turns, radius = 1.2, 1.0
 rng = np.random.RandomState(0)
@@ -64,16 +67,16 @@ U = np.dot(data, [[-.79, -.59, -.13],
                   [-.53,  .56,  .63]])
 sp.scatter(U[:, 1], U[:, 2], c=colors)
 sp.set_title("Original data")
-fig = pl.figure()
-fig.savefig('original_figure.png')
+#fig = pl.figure()
+#fig.savefig('original_figure.png')
 
-print "Computing LLE embedding"
+print ("Computing LLE embedding")
 n_neighbors, out_dim = 12, 2
 X_r, cost = locally_linear_embedding(data, n_neighbors, out_dim)
-print(X_r)
+#print(X_r)
 sp = pl.subplot(212)
 sp.scatter(X_r[:,0], X_r[:,1], c=colors)
 sp.set_title("LLE embedding")
-fig = pl.figure()
-fig.savefig('derieved_figure.png')
+#fig = pl.figure()
+#fig.savefig('derieved_figure.png')
 pl.show()
